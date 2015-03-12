@@ -20,3 +20,11 @@ func TestColumnNameSuccess(t *testing.T) {
 	assert.Equal("column_name", d.ColumnName(tTable{}))
 	assert.True(true)
 }
+
+func TestFieldNameSuccess(t *testing.T) {
+	assert := assert.New(t)
+
+	field := "a field"
+
+	assert.Equal("", fieldName(field))
+}

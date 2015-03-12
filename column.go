@@ -27,3 +27,9 @@ func (d *DbDetails) ColumnName(table interface{}) string {
 
 	panic("tag not found! for " + field)
 }
+
+func fieldName(field interface{}) string {
+	// t := reflect.TypeOf(field)
+	// v := reflect.ValueOf(field)
+	return ""
+}
