@@ -24,3 +24,19 @@ func TestDbConn(t *testing.T) {
 
 	assert.NotNil(db.Instance)
 }
+
+func TestDbPing(t *testing.T) {
+	assert := assert.New(t)
+
+	db := New("nodb", "root", "mice")
+
+	assert.Panics(func() {
+		db.Conn()
+	})
+
+	db = New("ark_test", "root", "mice")
+
+	assert.NotPanics(func() {
+		db.Conn()
+	})
+}
