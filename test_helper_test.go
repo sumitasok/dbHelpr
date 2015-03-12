@@ -82,3 +82,15 @@ func TestDbTruncate(t *testing.T) {
 		db.Truncate("event_venue")
 	})
 }
+
+func TestWrapTest(t *testing.T) {
+	db := New("ark_test", "root", "mice")
+	db.Conn()
+	defer db.Close()
+	test := func(tIn *testing.T, dbIn *Db) {
+		if false {
+			tIn.Fatal("test run successfully")
+		}
+	}
+	db.Wrap(t, test)
+}

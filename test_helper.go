@@ -8,6 +8,7 @@ import (
 	sql "database/sql"
 	// needed for dtabase sql connection
 	_ "github.com/go-sql-driver/mysql"
+	"testing"
 )
 
 type Db struct {
@@ -16,6 +17,11 @@ type Db struct {
 	Password string
 	Instance *sql.DB
 	Logger   logger
+	Tables   []table
+}
+
+type table struct {
+	Name string
 }
 
 func New(name string, user string, pswd string) *Db {
@@ -60,6 +66,29 @@ func (d *Db) Conn() *Db {
 
 func (d *Db) Close() {
 	d.Instance.Close()
+}
+
+func (d *Db) Wrap(t *testing.T, testFn func(*testing.T, *Db), tables ...string) *Db {
+	d.clean(tables...)
+	testFn(t, d)
+	d.clean(tables...)
+	d.Close()
+	return d
+}
+
+func (d *Db) clean(tables ...string) *Db {
+
+	if len(tables) == 0 {
+		for _, table := range d.Tables {
+			d.Truncate(table.Name)
+		}
+		return d
+	}
+
+	for _, table := range tables {
+		d.Truncate(table)
+	}
+	return d
 }
 
 func (d *Db) Truncate(table string) *Db {
