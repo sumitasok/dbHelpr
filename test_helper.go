@@ -15,6 +15,7 @@ type Db struct {
 	Username string
 	Password string
 	Instance *sql.DB
+	Logger   logger
 }
 
 func New(name string, user string, pswd string) *Db {
@@ -25,11 +26,24 @@ func New(name string, user string, pswd string) *Db {
 	}
 }
 
+func (d *Db) Log(l logger) *Db {
+	d.Logger = l
+	return d
+}
+
+func (d *Db) log(args ...interface{}) {
+	if d.Logger != nil {
+		d.Logger.Fatal(args)
+		return
+	}
+	panic(args)
+}
+
 func (d *Db) Conn() *Db {
 	db, err := sql.Open("mysql", d.Username+":"+d.Password+"@/"+d.Name)
 
 	if err != nil {
-		panic(err.Error())
+		d.log(err.Error())
 	}
 
 	d.Instance = db
@@ -38,7 +52,7 @@ func (d *Db) Conn() *Db {
 	pingErr := d.Instance.Ping()
 
 	if pingErr != nil {
-		panic(pingErr)
+		d.log(pingErr)
 	}
 
 	return d
@@ -53,7 +67,7 @@ func (d *Db) Truncate(table string) *Db {
 	defer stmt.Close()
 	_, err := stmt.Exec()
 	if err != nil {
-		panic(err)
+		d.log(err)
 	}
 	return d
 }

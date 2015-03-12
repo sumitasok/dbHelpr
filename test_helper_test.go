@@ -26,6 +26,25 @@ func TestDbConn(t *testing.T) {
 	assert.NotNil(db.Instance)
 }
 
+/* a dummy logger for testing purpose
+in real, you can use both package log and testing.T */
+type tLogger struct{}
+
+func (l tLogger) Fatal(args ...interface{}) {}
+
+func (l tLogger) Fatalf(s string, args ...interface{}) {}
+
+func TestDbConnNotPanicsWhenLoggerSet(t *testing.T) {
+	assert := assert.New(t)
+
+	db := New("nodb", "root", "mice").Log(tLogger{})
+
+	assert.NotPanics(func() {
+		db.Conn()
+		defer db.Close()
+	})
+}
+
 func TestDbPing(t *testing.T) {
 	assert := assert.New(t)
 
