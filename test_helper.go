@@ -1,5 +1,9 @@
 package dbhelpr
 
+/*
+	If Conn gets closed accidentaly, you can call conn on the existing object any time
+*/
+
 import (
 	sql "database/sql"
 	// needed for dtabase sql connection
@@ -29,7 +33,7 @@ func (d *Db) Conn() *Db {
 	}
 
 	d.Instance = db
-	defer d.Instance.Close()
+	// defer d.Instance.Close()
 
 	pingErr := d.Instance.Ping()
 
@@ -37,5 +41,19 @@ func (d *Db) Conn() *Db {
 		panic(pingErr)
 	}
 
+	return d
+}
+
+func (d *Db) Close() {
+	d.Instance.Close()
+}
+
+func (d *Db) Truncate(table string) *Db {
+	stmt, _ := d.Instance.Prepare("truncate " + table)
+	defer stmt.Close()
+	_, err := stmt.Exec()
+	if err != nil {
+		panic(err)
+	}
 	return d
 }

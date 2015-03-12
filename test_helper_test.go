@@ -21,6 +21,7 @@ func TestDbConn(t *testing.T) {
 	assert.Nil(db.Instance)
 
 	db.Conn()
+	defer db.Close()
 
 	assert.NotNil(db.Instance)
 }
@@ -32,11 +33,31 @@ func TestDbPing(t *testing.T) {
 
 	assert.Panics(func() {
 		db.Conn()
+		defer db.Close()
 	})
 
 	db = New("ark_test", "root", "mice")
 
 	assert.NotPanics(func() {
 		db.Conn()
+		defer db.Close()
+	})
+}
+
+func TestDbTruncate(t *testing.T) {
+	assert := assert.New(t)
+
+	assert.Panics(func() {
+		db := New("ark_test", "root", "mice")
+		db.Conn()
+		defer db.Close()
+		db.Truncate("noTable")
+	})
+
+	assert.NotPanics(func() {
+		db := New("ark_test", "root", "mice")
+		db.Conn()
+		defer db.Close()
+		db.Truncate("event_venue")
 	})
 }
