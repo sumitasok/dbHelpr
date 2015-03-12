@@ -69,7 +69,7 @@ func (d *Db) Close() {
 }
 
 func (d *Db) Wrap(t *testing.T, testFn func(*testing.T, *Db), tables ...string) *Db {
-	d.clean(tables...)
+	// d.clean(tables...)
 	testFn(t, d)
 	d.clean(tables...)
 	d.Close()
@@ -77,7 +77,6 @@ func (d *Db) Wrap(t *testing.T, testFn func(*testing.T, *Db), tables ...string) 
 }
 
 func (d *Db) clean(tables ...string) *Db {
-
 	if len(tables) == 0 {
 		for _, table := range d.Tables {
 			d.Truncate(table.Name)
@@ -99,4 +98,8 @@ func (d *Db) Truncate(table string) *Db {
 		d.log(err)
 	}
 	return d
+}
+
+func (d Db) ErrNoRow() error {
+	return sql.ErrNoRows
 }

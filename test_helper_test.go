@@ -3,6 +3,7 @@ package dbhelpr
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestNewDB(t *testing.T) {
@@ -87,10 +88,34 @@ func TestWrapTest(t *testing.T) {
 	db := New("ark_test", "root", "mice")
 	db.Conn()
 	defer db.Close()
-	test := func(tIn *testing.T, dbIn *Db) {
-		if false {
-			tIn.Fatal("test run successfully")
+	test := func(t *testing.T, d *Db) {
+		db := &d.Instance
+
+		stmtCreate, sCError := db.Prepare("INSERT INTO " + "event_venue" + " VALUES(?,?,?,?,?)")
+		defer stmtCreate.Exec("eventID", "venueID", "venueName", time.Now().UTC(), time.Now().UTC())
+
+		if sCError != nil {
+			t.Fatal(sCError)
+		}
+
+		var eventId string
+		err := db.QueryRow("SELECT event_id FROM event_venue WHERE event_id = ?", "eventId").Scan(&eventId)
+
+		switch {
+		case err == d.ErrNoRow():
+			t.Fatal("No Event returned")
+			break
+		case err != nil:
+			t.Fatal(err)
+			break
+		default:
+			break
 		}
 	}
-	db.Wrap(t, test)
+	db.Wrap(t, test, "event_venue")
+}
+
+func TestCleanSuccess(t *testing.T) {
+	db := New("ark_test", "root", "mice").Conn()
+	db.clean("event_venue", "venue_audi")
 }
