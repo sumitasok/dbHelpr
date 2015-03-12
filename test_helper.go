@@ -68,12 +68,14 @@ func (d *Db) Close() {
 	d.Instance.Close()
 }
 
-func (d *Db) Wrap(t *testing.T, testFn func(*testing.T, *Db), tables ...string) *Db {
-	// d.clean(tables...)
+// Wrap clones a new db connection from existing
+// and then takes care of cleaning the database after actions are commited on database
+// For now, manually the tabkes names that has to be cleaned has to be mentioned
+func (d *Db) Wrap(t *testing.T, testFn func(*testing.T, *Db), tables ...string) {
+	n := New(d.Name, d.Username, d.Password).Conn()
 	testFn(t, d)
-	d.clean(tables...)
-	d.Close()
-	return d
+	n.clean(tables...)
+	n.Close()
 }
 
 func (d *Db) clean(tables ...string) *Db {

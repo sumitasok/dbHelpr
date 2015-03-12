@@ -85,14 +85,16 @@ func TestDbTruncate(t *testing.T) {
 }
 
 func TestWrapTest(t *testing.T) {
+	assert := assert.New(t)
 	db := New("ark_test", "root", "mice")
 	db.Conn()
 	defer db.Close()
 	test := func(t *testing.T, d *Db) {
 		db := &d.Instance
 
+		randomEventID := "eventId"
 		stmtCreate, sCError := db.Prepare("INSERT INTO " + "event_venue" + " VALUES(?,?,?,?,?)")
-		defer stmtCreate.Exec("eventID", "venueID", "venueName", time.Now().UTC(), time.Now().UTC())
+		defer stmtCreate.Exec(randomEventID, "venueID", "venueName", time.Now().UTC(), time.Now().UTC())
 
 		if sCError != nil {
 			t.Fatal(sCError)
@@ -111,8 +113,17 @@ func TestWrapTest(t *testing.T) {
 		default:
 			break
 		}
+
+		if randomEventID != eventId {
+			t.Fatal("randomEventId doesn't match with returned eventId", eventId)
+		}
 	}
 	db.Wrap(t, test, "event_venue")
+
+	var eventId string
+	err := New("ark_test", "root", "mice").Conn().Instance.QueryRow("SELECT event_id FROM event_venue WHERE event_id = ?", "eventId").Scan(&eventId)
+	assert.Error(err)
+
 }
 
 func TestCleanSuccess(t *testing.T) {
