@@ -30,7 +30,9 @@ func TestDbConn(t *testing.T) {
 in real, you can use both package log and testing.T */
 type tLogger struct{}
 
-func (l tLogger) Fatal(args ...interface{}) {}
+func (l tLogger) Fatal(args ...interface{}) {
+	println("error mesage successfully printing - No Error")
+}
 
 func (l tLogger) Fatalf(s string, args ...interface{}) {}
 
