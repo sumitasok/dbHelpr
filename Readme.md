@@ -21,8 +21,8 @@ func TestXXX(t *testing.T) {
 	db.Log(t)	
 }
 ```
-
-This will exit as `t.Fatal` is called internally
+You are setting **pointer to testing.T instance** as Logger to dbHelper
+This will let the test exit when any database error happens as `t.Fatal` is called internally
 
 Alternatively, you can pass `log` packages `log.New(io.Writer, string, int) *Logger`
 
