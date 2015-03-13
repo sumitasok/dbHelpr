@@ -27,3 +27,16 @@ This will exit as `t.Fatal` is called internally
 Alternatively, you can pass `log` packages `log.New(io.Writer, string, int) *Logger`
 
 
+---
+
+Wrapper function to effectively truncate the data created while testing
+
+```
+db := New("ark_test", "root", "mice")
+db.Conn()
+db.Wrap(t, func(tIn *testing.T, dIn *Db) {
+//You tests, use t for test, and dIn.Instance.DataBaseSqlQueries()
+}, "table_name1", "table_name2",...)
+```
+
+
