@@ -29,7 +29,7 @@ Alternatively, you can pass `log` packages `log.New(io.Writer, string, int) *Log
 
 ---
 
-Wrapper function to effectively truncate the data created while testing
+**Wrapper function** to effectively truncate the data created while testing
 
 ```
 db := New("ark_test", "root", "mice")
