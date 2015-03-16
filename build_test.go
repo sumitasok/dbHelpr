@@ -45,7 +45,7 @@ func TestBuildSuccess(t *testing.T) {
 		assert.Equal(venue.EventID, venueResult.EventID)
 		// datetime remains same when provided
 		// assert.Equal(yesterday.String(), venueResult.CreatedAt.String())
-	})
+	}, venue.ResourceName())
 
 	assert.True(true)
 }
