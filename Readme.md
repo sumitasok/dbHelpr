@@ -47,8 +47,12 @@ All you need is a struct with mysql tags
 
 ```
 type Table struct {
-	Name string `mysql:"name"`
+	Name      string    `mysql:"name"`
 	CreatedAt time.Time `mysql:"created_at" // any name that ends with _at is considered datetime and is autofilled it with time now.
+}
+
+func (t Table) ResourceName() string {
+	return "table_name" // mysql table name
 }
 ```
 
