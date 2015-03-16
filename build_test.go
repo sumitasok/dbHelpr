@@ -61,5 +61,5 @@ func TestValueQuery(t *testing.T) {
 func TestListOfColumns(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal("event_id,venue_id,venue_name,updated_at,created_at", listOfTags(venue))
+	assert.Equal("event_id,venue_id,venue_name,venue_updated_at,venue_created_at", listOfTags(venue))
 }
