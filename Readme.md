@@ -39,4 +39,30 @@ db.Wrap(t, func(tIn *testing.T, dIn *Db) {
 }, "table_name1", "table_name2",...)
 ```
 
+---
+
+# Build - insert into mysql using just a struct
+
+All you need is a struct with mysql tags
+
+```
+type Table struct {
+	Name string `mysql:"name"`
+	CreatedAt time.Time `mysql:"created_at" // any name that ends with _at is considered datetime and is autofilled it with time now.
+}
+```
+
+note: `name` and `created_at` are the column names in the table.
+
+```
+
+tRow := Table{"Sumit"}
+
+dbhelpr.Build(tRow)
+
+```
+
+This will,
+- insert the data into `table_name`
+- and the `created_at` field is automatically filled in with datetime as now. (regex .*_at, which means, the column name should end with "_at" for this feature to work)
 
