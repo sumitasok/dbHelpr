@@ -65,6 +65,11 @@ tRow := Table{"Sumit"}
 dbhelpr.Build(tRow)
 
 ```
+A Query is generated like this,
+
+```
+INSERT INTO table_name (name, created_at) VALUES ("Sumit", "2015-03-16 20:23:22")
+```
 
 This will,
 - insert the data into `table_name`
