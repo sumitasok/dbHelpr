@@ -29,7 +29,7 @@ Alternatively, you can pass `log` packages `log.New(io.Writer, string, int) *Log
 
 ---
 
-**Wrapper function** to effectively truncate the data created while testing
+**Wrapper function** to effectively Delete the data created while testing, for every test so that the tests are run on fresh database everytime.
 
 ```
 db := New("ark_test", "root", "mice")
@@ -41,14 +41,16 @@ db.Wrap(t, func(tIn *testing.T, dIn *Db) {
 
 ---
 
-# Build - insert into mysql using just a struct
+# Build - insert your struct data into mysql table in the easiest way possible
+
+Currently tested only with one non-nested structs
 
 All you need is a struct with mysql tags
 
 ```
 type Table struct {
 	Name      string    `mysql:"name"`
-	CreatedAt time.Time `mysql:"created_at" // any name that ends with _at is considered datetime and is autofilled it with time now.
+	CreatedAt time.Time `mysql:"created_at" // any name that ends with _at is considered datetime and is autofilled with time now.
 }
 
 func (t Table) ResourceName() string {
