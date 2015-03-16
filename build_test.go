@@ -1,5 +1,7 @@
 package dbhelpr
 
+// Adds date time for tags .*_at as now() when not provided
+
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -10,15 +12,17 @@ type Venue struct {
 	EventID   string    `mysql:"event_id,false"`
 	ID        string    `mysql:"venue_id"`
 	Name      string    `mysql:"venue_name"`
-	UpdatedAt time.Time `mysql:"updated_at"`
-	CreatedAt time.Time `mysql:"created_at"`
+	UpdatedAt time.Time `mysql:"venue_updated_at"`
+	CreatedAt time.Time `mysql:"venue_created_at"`
 }
 
 var (
-	venue = Venue{
-		EventID: "event id",
-		ID:      "venue id",
-		Name:    "Melbourn",
+	yesterday = time.Now().AddDate(0, 0, -1).UTC()
+	venue     = Venue{
+		EventID:   "event id",
+		ID:        time.Now().String(),
+		Name:      "Melbourn",
+		CreatedAt: yesterday,
 	}
 )
 
@@ -35,9 +39,12 @@ func TestBuildSuccess(t *testing.T) {
 		venueResult := Venue{}
 
 		result := dbCp.Instance.QueryRow("select * from event_venue where venue_id = ?", venue.ID)
-		result.Scan(venueResult.EventID, venueResult.ID, venueResult.Name, venueResult.CreatedAt, venueResult.UpdatedAt)
+		result.Scan(&venueResult.EventID, &venueResult.ID, &venueResult.Name, &venueResult.CreatedAt, &venueResult.UpdatedAt)
 
 		assert.Equal(venue.Name, venueResult.Name)
+		assert.Equal(venue.EventID, venueResult.EventID)
+		// datetime remains same when provided
+		// assert.Equal(yesterday.String(), venueResult.CreatedAt.String())
 	})
 
 	assert.True(true)
