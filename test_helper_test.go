@@ -93,7 +93,7 @@ func TestWrapTest(t *testing.T) {
 
 		randomEventID := "eventId"
 		stmtCreate, sCError := db.Prepare("INSERT INTO " + "event_venue" + " VALUES(?,?,?,?,?)")
-		defer stmtCreate.Exec(randomEventID, "venueID", "venueName", time.Now().UTC(), time.Now().UTC())
+		stmtCreate.Exec(randomEventID, "venueID", "venueName", time.Now().UTC(), time.Now().UTC())
 
 		if sCError != nil {
 			t.Fatal(sCError)
